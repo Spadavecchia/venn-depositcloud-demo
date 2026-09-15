@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Venn - Enrollment return</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="page">
+  <div class="card" id="return-message">
+    <p>Returning to the resident portal&hellip;</p>
+  </div>
+</div>
+<script>
+  function readResultParams() {
+    var params = new URLSearchParams(window.location.search);
+    return {
+      type: "dc:enrollment",
+      status: params.get("status"),
+      dc_account: params.get("dc_account"),
+      reason: params.get("reason"),
+    };
+  }
+
+  function isFramed() {
+    try {
+      return window.top !== window.self;
+    } catch (err) {
+      return true;
+    }
+  }
+
+  function notifyParent(result) {
+    if (!window.parent) return;
+    window.parent.postMessage(result, window.location.origin);
+  }
+
+  function renderTopLevelMessage(result) {
+    var container = document.getElementById("return-message");
+    if (!container) return;
+    var text = "Enrollment finished with status " + (result.status || "unknown") + " — you can close this tab.";
+    container.innerHTML = "<p>" + text + "</p>";
+  }
+
+  function renderFramedMessage() {
+    var container = document.getElementById("return-message");
+    if (!container) return;
+    container.innerHTML = "<p>Returning results to the parent application&hellip;</p>";
+  }
+
+  function init() {
+    var result = readResultParams();
+    if (isFramed()) {
+      renderFramedMessage();
+      notifyParent(result);
+    } else {
+      renderTopLevelMessage(result);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", init);
+</script>
+</body>
+</html>

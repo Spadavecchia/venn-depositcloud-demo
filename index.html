@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Venn - DepositCloud Enrollment Demo</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="page">
+  <header class="site-header">
+    <h1>Venn <span class="accent">&middot;</span> DepositCloud enrollment demo</h1>
+    <p>A stand-in resident portal that embeds <span class="accent">DepositCloud</span> enrollment in an iframe, for partner developers to try the launch-token contract end to end.</p>
+  </header>
+
+  <div id="banner-region" aria-live="polite"></div>
+
+  <details class="config-panel" id="config-panel">
+    <summary>Configuration</summary>
+    <div class="config-body">
+      <fieldset>
+        <legend>DepositCloud</legend>
+        <div class="field-grid">
+          <div class="field full">
+            <label for="cfg-host">DepositCloud host</label>
+            <input type="text" id="cfg-host" autocomplete="off">
+          </div>
+          <div class="field full">
+            <label for="cfg-path">Property enrollment link path</label>
+            <input type="text" id="cfg-path" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="cfg-iss">Issuer (iss)</label>
+            <input type="text" id="cfg-iss" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="cfg-secret">Signing secret</label>
+            <input type="password" id="cfg-secret" autocomplete="off">
+            <p class="hint">test secret only &mdash; never stored, cleared on reload</p>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Resident</legend>
+        <p class="hint">These must match a resident already synced in DepositCloud.</p>
+        <div class="field-grid">
+          <div class="field">
+            <label for="cfg-sub">sub (PMS resident id / tcode)</label>
+            <input type="text" id="cfg-sub" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="cfg-email">email</label>
+            <input type="email" id="cfg-email" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="cfg-dob">dob (YYYY-MM-DD)</label>
+            <input type="text" id="cfg-dob" placeholder="YYYY-MM-DD" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="cfg-lease-id">lease_id</label>
+            <input type="text" id="cfg-lease-id" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="cfg-unit-number">unit_number</label>
+            <input type="text" id="cfg-unit-number" autocomplete="off">
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Return</legend>
+        <div class="field-grid">
+          <div class="field full">
+            <label for="cfg-return-url">Return URL</label>
+            <input type="text" id="cfg-return-url" readonly>
+          </div>
+        </div>
+      </fieldset>
+    </div>
+  </details>
+
+  <section class="card">
+    <h2>Move-in checklist</h2>
+    <ul class="checklist" id="checklist">
+      <li class="checklist-item" data-step="electricity">
+        <span class="checklist-label">Electricity</span>
+        <span class="checklist-actions">
+          <span class="pill pill-done" id="pill-electricity"></span>
+        </span>
+      </li>
+      <li class="checklist-item" data-step="internet">
+        <span class="checklist-label">Internet</span>
+        <span class="checklist-actions">
+          <span class="pill pill-done" id="pill-internet"></span>
+        </span>
+      </li>
+      <li class="checklist-item" data-step="insurance">
+        <span class="checklist-label">Renters insurance</span>
+        <span class="checklist-actions">
+          <span class="pill pill-pending" id="pill-insurance"></span>
+        </span>
+      </li>
+      <li class="checklist-item" data-step="deposit">
+        <span class="checklist-label">Deposit (DepositCloud)</span>
+        <span class="checklist-actions">
+          <button type="button" class="btn btn-secondary" id="deposit-action">Start deposit</button>
+          <span class="pill pill-pending" id="pill-deposit"></span>
+        </span>
+      </li>
+      <li class="checklist-item" data-step="keys">
+        <span class="checklist-label">Keys pickup</span>
+        <span class="checklist-actions">
+          <span class="pill pill-pending" id="pill-keys"></span>
+        </span>
+      </li>
+    </ul>
+    <p id="deposit-validation" class="validation-message" hidden></p>
+    <p><button type="button" class="link-button" id="reset-demo">Reset demo</button></p>
+  </section>
+</div>
+
+<div class="modal-overlay" id="modal-overlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-header">
+      <h2 id="modal-title">DepositCloud enrollment</h2>
+      <button type="button" class="btn-icon" id="modal-close" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <iframe id="enrollment-frame" title="DepositCloud enrollment" allow="payment" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      <div class="what-we-sent">
+        <h3>What we sent</h3>
+        <div class="sent-block">
+          <div class="sent-block-header">
+            <span>Launch URL</span>
+            <button type="button" class="copy-button" id="copy-url" data-copy-target="sent-url">Copy</button>
+          </div>
+          <pre class="sent-value" id="sent-url"></pre>
+        </div>
+        <div class="sent-block">
+          <div class="sent-block-header">
+            <span>Decoded payload</span>
+            <button type="button" class="copy-button" id="copy-payload" data-copy-target="sent-payload">Copy</button>
+          </div>
+          <pre class="sent-value" id="sent-payload"></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
