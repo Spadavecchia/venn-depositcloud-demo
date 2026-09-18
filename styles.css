@@ -453,3 +453,7 @@ pre.sent-value {
     align-items: flex-start;
   }
 }
+
+[hidden] {
+  display: none !important;
+}
